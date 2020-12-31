@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 
 
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten
-from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.models import Sequential,Model
+from tensorflow.keras.layers import Conv2D,MaxPooling2D,BatchNormalization,Input,Dropout,Flatten,Dense
+from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.preprocessing import image
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
@@ -44,6 +44,93 @@ def loading_images():
     return X
 
 
+class MyModel(Model):
+    def __init__(self):
+        super(MyModel, self).__init__()
+        self. conv1 = Conv2D(filters=64, kernel_size=(5, 5), activation='relu')
+        self.batch1 = BatchNormalization(axis=3)
+        self.conv1_2 =  Conv2D(filters=64, kernel_size=(5, 5), activation='relu')
+        self.max1 = MaxPooling2D(pool_size=(2, 2))
+        self.batch1_2 = BatchNormalization(axis=3)
+        self.drop1 = Dropout(0.25)
+
+        self.conv2 = Conv2D(filters=128, kernel_size=(5, 5), activation='relu')
+        self.batch2 = BatchNormalization(axis=3)
+        self.conv2_2 = Conv2D(filters=128, kernel_size=(5, 5), activation='relu')
+        self.max2 =    MaxPooling2D(pool_size=(2, 2))
+        self.batch2_2 = BatchNormalization(axis=3)
+        self.drop2 = Dropout(0.25)
+
+        self.conv3 = Conv2D(filters=256, kernel_size=(5, 5), activation='relu')
+        self.batch3 = BatchNormalization(axis=3)
+        self.conv3_2 = Conv2D(filters=256, kernel_size=(5, 5), activation='relu')
+        self.max3 = MaxPooling2D(pool_size=(2, 2))
+        self.batch3 = BatchNormalization(axis=3)
+        self.drop3 = Dropout(0.5)
+
+        self.flat4 = Flatten()
+        self.dense4 = Dense(512, activation='relu')
+        self.batch4 = BatchNormalization()
+        self.drop4 = Dropout(0.5)
+
+        self.dense5  = Dense(60, activation="relu")
+        self.batch5 = BatchNormalization()
+        self.drop5 = Dropout(0.5)
+
+        self.dense6 = Dense(5,activation='softmax')
+
+
+
+
+
+
+
+
+
+    def call(self, inputs, training=None, mask=None):
+
+        x = self.conv1(inputs)
+        x = self.batch1(x)
+        x = self.conv1_2(x)
+        x = self.max1(x)
+        x = self.batch1_2(x)
+        x= self.drop1(x)
+
+        x = self.conv2(x)
+        x = self.batch2(x)
+        x = self.conv2_2(x)
+        x = self.max2(x)
+        x = self.batch2_2(x)
+        x = self.drop2(x)
+
+        x = self.conv3(x)
+        x =self.batch3(x)
+        x = self.conv3_2(x)
+        x = self.max3(x)
+        x = self.batch3(x)
+        x = self.drop3(x)
+
+        x = self.flat4(x)
+        x = self.dense4(x)
+        x = self.batch4(x)
+        x = self.drop4(x)
+
+        x = self.dense5(x)
+        x = self.batch5(x)
+        x = self.drop5(x)
+
+        x = self.dense6(x)
+
+        return x
+
+
+    def summary(self):
+        inputs = Input(shape=(224,224,3))
+        outputs = self.call(inputs)
+        model = Model(inputs=inputs,outputs=outputs)
+        return model.summary()
+
+
 def shuffle_data():
     train = pd.read_csv('dataset/train.csv')
     filenames = train['image_id']
@@ -69,34 +156,41 @@ def train_val_generation(batch_size):
 
     return training_batch_generator,validation_batch_generator
 
-def creating_model():
-    model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(80, 80, 3)))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-    model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(5, activation='softmax'))
 
-    return model
+# def creating_model():
+#     model = Sequential()
+#     model.add(Conv2D(64, kernel_size=(3, 3), input_shape=(80, 80, 3)))
+#     model.add(BatchNormalization())
+#     model.add(Activation('relu'))
+#     model.add(Conv2D(32, (3, 3)))
+#     model.add(BatchNormalization())
+#     model.add(Activation('relu'))
+#     model.add(MaxPooling2D(pool_size=(2, 2)))
+#     #model.add(Dropout(0.25))
+#     model.add(Flatten())
+#     model.add(Dense(128, activation='relu'))
+#     #model.add(Dropout(0.5))
+#     model.add(Dense(5, activation='softmax'))
+#
+#     return model
 
 
 def main():
-    batch_size = 32
+    batch_size = 16
     train_batch_generator,val_batch_generator = train_val_generation(batch_size)
-    model = creating_model()
-    model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
+    #model = creating_model()
+    model = MyModel()
+    model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['categorical_accuracy'])
     model.summary()
 
     model.fit(train_batch_generator,
                         steps_per_epoch=int(17117 // batch_size),
-                        epochs=10,
+                        epochs=2,
                         verbose=1,
                         validation_data=val_batch_generator,
                         validation_steps=int(4280 // batch_size))
-    #train_val_generation()
+
+    model.save('model.h5',include_optimizer = False)
 
 
 

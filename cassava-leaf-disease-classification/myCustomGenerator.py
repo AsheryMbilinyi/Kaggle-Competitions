@@ -19,5 +19,5 @@ class CustomGenerator(tf.keras.utils.Sequence):
         batch_x = self.image_filenames[idx * self.batch_size: (idx + 1) * self.batch_size]
         batch_y = self.labels[idx * self.batch_size: (idx + 1) * self.batch_size]
 
-        return np.array([resize(imread('/home/mbiash00/kaggle/cassava-leaf-disease-classification/dataset/train_images/' + str(file_name)), (80, 80, 3))
+        return np.array([resize(imread('/home/mbiash00/kaggle/cassava-leaf-disease-classification/dataset/train_images/' + str(file_name)), (224, 224, 3))
                          for file_name in batch_x]) / 255.0, np.array(batch_y)
