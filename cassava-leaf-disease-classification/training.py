@@ -57,7 +57,7 @@ class MyModel(Model):
         self.conv2 = Conv2D(filters=128, kernel_size=(5, 5), activation='relu')
         self.batch2 = BatchNormalization(axis=3)
         self.conv2_2 = Conv2D(filters=128, kernel_size=(5, 5), activation='relu')
-        self.max2 =    MaxPooling2D(pool_size=(2, 2))
+        self.max2 = MaxPooling2D(pool_size=(2, 2))
         self.batch2_2 = BatchNormalization(axis=3)
         self.drop2 = Dropout(0.25)
 
@@ -112,11 +112,11 @@ class MyModel(Model):
 
         x = self.flat4(x)
         x = self.dense4(x)
-        x = self.batch4(x)
+        #x = self.batch4(x)
         x = self.drop4(x)
 
         x = self.dense5(x)
-        x = self.batch5(x)
+        #x = self.batch5(x)
         x = self.drop5(x)
 
         x = self.dense6(x)
@@ -180,17 +180,19 @@ def main():
     train_batch_generator,val_batch_generator = train_val_generation(batch_size)
     #model = creating_model()
     model = MyModel()
-    model.compile(loss='categorical_crossentropy', optimizer='Adam', metrics=['categorical_accuracy'])
+    opt = tf.keras.optimizers.Adadelta(learning_rate=0.01)
+    loss = tf.keras.losses.CategoricalCrossentropy()
+    model.compile(loss=loss, optimizer=opt, metrics=['categorical_accuracy'])
     model.summary()
 
     model.fit(train_batch_generator,
                         steps_per_epoch=int(17117 // batch_size),
-                        epochs=2,
+                        epochs=1,
                         verbose=1,
                         validation_data=val_batch_generator,
                         validation_steps=int(4280 // batch_size))
 
-    model.save('model.h5',include_optimizer = False)
+    model.save_weights('cassava_mode_ya_nne',save_format='tf')
 
 
 
