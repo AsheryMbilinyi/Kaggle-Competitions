@@ -6,7 +6,6 @@ from skimage.transform import resize
 
 
 class CustomGenerator(tf.keras.utils.Sequence):
-
     def __init__(self, image_filenames, labels, batch_size):
         self.image_filenames = image_filenames
         self.labels = labels
@@ -21,3 +20,4 @@ class CustomGenerator(tf.keras.utils.Sequence):
 
         return np.array([resize(imread('/home/mbiash00/kaggle/cassava-leaf-disease-classification/dataset/train_images/' + str(file_name)), (224, 224, 3))
                          for file_name in batch_x]) / 255.0, np.array(batch_y)
+
