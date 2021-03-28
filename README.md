@@ -1,1 +1,1 @@
-# Various kaggle competitions I participated for fun
+# various kaggle competitions i participated for fun
