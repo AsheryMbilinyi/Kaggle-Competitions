@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from sklearn.utils import shuffle
 from tqdm import tqdm
-from myCustomGenerator import CustomGenerator
+from my_custom_generator import CustomGenerator
 
 
 def reading_data():
