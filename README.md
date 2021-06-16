@@ -9,6 +9,8 @@ Competition 1  : *Plant Pathology 2021 - FGVC8*
 - Task : *Identify the category of foliar diseases in apple trees*
 - Condition: *CPU Notebook <= 9 hours run-time, GPU Notebook <= 2 hours run-time*
 - URL : *https://www.kaggle.com/c/plant-pathology-2021-fgvc8/overview*
+- - Sample images: ![alt text](https://github.com/AsheryMbilinyi/kaggle-competitions/blob/main/plant-pathology-2021-FGVC8/sample.png)
+
 
 
 
