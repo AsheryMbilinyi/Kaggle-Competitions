@@ -1,5 +1,5 @@
 
-### This repo comprises my submission to various Kaggle competitions(see the below), in which I participated over the weekends for fun.
+### This repository contains my entries for several Kaggle competitions (refer to the list below), where I engaged in weekend participation purely for enjoyment.
 Competition 0  : *Cassava Leaf Disease Classification*
 - Task : *Identify the type of disease present on a Cassava Leaf image*
 - URL : *https://www.kaggle.com/c/cassava-leaf-disease-classification*
